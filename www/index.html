@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="rifidi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/rifidi.css">
+    <title>Rifidi</title>
+</head>
+
+<body ng-controller="RifiController as controller">
+
+    <div class="row" ng-init="dados.mode = 'Lista'">
+
+        <div class="col-md-offset-2 col-md-8">
+            <button class="btn btn-default" ng-click="dados.mode = 'Lista'">
+                Lista
+            </button>
+            <button class="btn btn-default" ng-click="dados.mode = 'Checkout'">
+                Checkout
+            </button>
+        </div>
+
+        <div class="col-md-offset-2 col-md-8" ng-if="dados.mode != 'Checkout'">
+
+            <!-- <pre>{{ dados | json }}</pre> -->
+
+            <table class="table">
+                <thead>
+                    <th> ID </th>
+                    <th></th>
+                    <th> valor </th>
+                    <th></th>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="tag in dados.tags | orderBy: 'is_product'" 
+                        ng-init="tag.is_product = tag.is_product == 1"
+                        ng-class = "{ 'success': dados.highlight == tag.id, 'info': dados.highlight2 == tag.id }">
+
+                        <td>{{ tag.id }} </td>
+
+                        <td>
+                            <div class="checkbox">
+                                <label for="is_product">
+                                    <input ng-model="tag.is_product" type="checkbox" name="is_product" id="is_product">
+                                    é produto?
+                                </label>
+                            </div>
+                        </td>
+
+                        <td >
+                            <div class="form-group">
+                                <input ng-disabled="!tag.is_product" ng-model="tag.value" type="number" class="form-controler" name="value" id="value">
+                            </div>
+                        </td>
+
+                        <td>
+                            
+                        <button class="btn btn-danger" ng-click="controller.onRemove(tag)">
+                            Remove
+                        </button>
+
+                        </td>
+
+                    </tr>
+                </tbody>
+
+            </table>
+        </div>
+
+        <div class="col-md-offset-2 col-md-8" ng-if="dados.mode == 'Checkout'">
+            <pre>{{ dados.checkout | json }}</pre>
+        </div>
+
+
+        <div class="col-md-offset-2 col-md-8" ng-if="dados.mode != 'Checkout'">
+            <button class="btn btn-primary" ng-click="controller.onUpdate()">
+                Save
+            </button>
+        </div>
+
+    </div>
+
+    <script src="/vendor/socket.io.js"></script>
+    <script src="/vendor/angular.min.js"></script>
+    <script src="/js/app.module.js"></script>
+    <script src="/js/app.controller.js"></script>
+
+</body>
+
+</html>
